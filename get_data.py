@@ -1,5 +1,4 @@
 #coding:utf-8
-import image as Image
 import numpy as np
 from scipy.misc import imsave
 import struct

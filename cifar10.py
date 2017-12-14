@@ -98,9 +98,9 @@ def start_train():
     # labels是N*10的矩阵，是真实的结果
 
 
-    cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels,logits=prediction))
-    #cost=-tf.reduce_mean(labels*tf.log(prediction))
-    train_step = tf.train.AdamOptimizer(learing_rate).minimize(cost)
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels,logits=prediction))
+    #a=-tf.reduce_mean(labels*tf.log(prediction))
+    train_step = tf.train.AdamOptimizer(learing_rate).minimize(loss)
     saver=tf.train.Saver()
     
 
@@ -121,14 +121,14 @@ def start_train():
     for ranges in range(0,100):
         for w in range(0, number_of_steps):
             temp_images,temp_labels=getnext(start,end,images_input,labels_input)
-            cost,train_step=sess.run([cost,train_step], feed_dict={images: temp_images, labels: temp_labels})
+            a,b=sess.run([loss,train_step], feed_dict={images: temp_images, labels: temp_labels})
             t=time.time()-start_time
             x=t/(w + ranges * number_of_steps + 1)
             if (w+ranges*number_of_steps)%10==0:
-                print ('step %d, loss = %.2f; %.3f sec/batch)' % (ranges * number_of_steps + w, cost, x))
-            if(cost<4):
+                print ('step %d, loss = %.2f; %.3f sec/batch)' % (ranges * number_of_steps + w, a, x))
+            if(a<4):
                 learing_rate=0.0001
-            if(cost<1):
+            if(a<1):
                 learing_rate=0.00001
             if (ranges*number_of_steps+w+1)%50==0:
                 savepath=saver.save(sess, check_point_path)
